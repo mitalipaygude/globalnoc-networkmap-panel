@@ -17,25 +17,25 @@ limitations under the License.
 import _ from "lodash";
 
 let colorSchemes = [
-      {name: 'RdYlGn',    value: 'interpolateRdYlGn',   invert: 'always'},
-      {name: 'Blues',     value: 'interpolateBlues',    invert: 'dark'},
-      {name: 'Greens',    value: 'interpolateGreens',   invert: 'dark'},
-      {name: 'Greys',     value: 'interpolateGreys',    invert: 'dark'},
-      {name: 'Oranges',   value: 'interpolateOranges',  invert: 'dark'},
-      {name: 'Purples',   value: 'interpolatePurples',  invert: 'dark'},
-      {name: 'Reds',      value: 'interpolateReds',     invert: 'dark'},
-      {name: 'BuGn',    value: 'interpolateBuGn',       invert: 'dark'},
-      {name: 'BuPu',    value: 'interpolateBuPu',       invert: 'dark'},
-      {name: 'GnBu',    value: 'interpolateGnBu',       invert: 'dark'},
-      {name: 'OrRd',    value: 'interpolateOrRd',       invert: 'dark'},
-      {name: 'PuBuGn',  value: 'interpolatePuBuGn',     invert: 'dark'},
-      {name: 'PuBu',    value: 'interpolatePuBu',       invert: 'dark'},
-      {name: 'PuRd',    value: 'interpolatePuRd',       invert: 'dark'},
-      {name: 'RdPu',    value: 'interpolateRdPu',       invert: 'dark'},
-      {name: 'YlGnBu',  value: 'interpolateYlGnBu',     invert: 'dark'},
-      {name: 'YlGn',    value: 'interpolateYlGn',       invert: 'dark'},
-      {name: 'YlOrBr',  value: 'interpolateYlOrBr',     invert: 'dark'},
-      {name: 'YlOrRd',  value: 'interpolateYlOrRd',     invert: 'dark'}
+      {name: 'RdYlGn',    value: 'interpolateRdYlGn',  },
+      {name: 'Blues',     value: 'interpolateBlues',   },
+      {name: 'Greens',    value: 'interpolateGreens',  },
+      {name: 'Greys',     value: 'interpolateGreys',   },
+      {name: 'Oranges',   value: 'interpolateOranges', },
+      {name: 'Purples',   value: 'interpolatePurples', },
+      {name: 'Reds',      value: 'interpolateReds',    },
+      {name: 'BuGn',    value: 'interpolateBuGn',      },
+      {name: 'BuPu',    value: 'interpolateBuPu',      },
+      {name: 'GnBu',    value: 'interpolateGnBu',      },
+      {name: 'OrRd',    value: 'interpolateOrRd',      },
+      {name: 'PuBuGn',  value: 'interpolatePuBuGn',    },
+      {name: 'PuBu',    value: 'interpolatePuBu',      },
+      {name: 'PuRd',    value: 'interpolatePuRd',      },
+      {name: 'RdPu',    value: 'interpolateRdPu',      },
+      {name: 'YlGnBu',  value: 'interpolateYlGnBu',    },
+      {name: 'YlGn',    value: 'interpolateYlGn',      },
+      {name: 'YlOrBr',  value: 'interpolateYlOrBr',    },
+      {name: 'YlOrRd',  value: 'interpolateYlOrRd',    }
 ];
 
 export class Scale {
@@ -80,6 +80,65 @@ export class Scale {
         }
     }
 
+    hexToRgb(hex) {
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    	return result ? {
+        	r: parseInt(result[1], 16),
+        	g: parseInt(result[2], 16),
+        	b: parseInt(result[3], 16)
+    	} : null; 
+
+   }
+
+    calculateOpacity(color) {
+
+	var r=this.hexToRgb(color).r;
+	var g=this.hexToRgb(color).g;
+	var b=this.hexToRgb(color).b;
+	console.log("hex to rgb",r,g,b);
+
+	var rgb= r + ',' + g + ',' + b;
+	console.log("hex to rgb",rgb);
+
+	var x=(255-r)/50;
+	var y=(255-g)/50;
+	var z=(255-b)/50;
+
+	var newR=r;
+	var newG=g;
+	var newB=b;
+	 for(var i=0;i<50;i++) {
+            newR=newR+parseInt(x);
+            newG=newG+parseInt(y);
+            newB=newB+parseInt(z);
+            var str='rgb('+newR+','+newG+','+newB+')';
+            
+	    this.rgbArray.push(str);
+            this.hexArray.push("#" + this.componentToHex(newR) + this.componentToHex(newG) + this.componentToHex(newB));
+        }
+	
+
+    }
+
+    displayOpacity(color) {
+	console.log("First letter",color.charAt(0));
+	this.rgbArray=[];
+	this.hexArray=[];
+	if(color.charAt(0)=='r')
+	{ 
+		var colorarr = color.substring(4, color.length-1).replace(/ /g, '').split(',');
+		console.log(colorarr[0]);
+		var tempColor="#" + this.componentToHex(parseInt(colorarr[0])) + this.componentToHex(parseInt(colorarr[1])) + this.componentToHex(parseInt(colorarr[2]));
+		color=tempColor;
+		
+	}
+	this.calculateOpacity(color);
+	
+	return {
+            rgb_values: this.rgbArray,
+            hex_values: this.hexArray
+        }
+    }
     displayColor(color) {
         this.rgbArray=[];
         this.hexArray=[];

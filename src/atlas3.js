@@ -53,6 +53,7 @@ const panelDefaults = {
         showDefault: true,
         content: ' '
     },
+    invert:true,
     to_si: 1000000000,
     scales: ['linear', 'sqrt'],
     colorScheme : 'interpolateRdYlGn',
@@ -282,7 +283,12 @@ export class Atlas3 extends MetricsPanelCtrl {
     }
  
     display() {
-        this.panel.colors=this.scale.displayColor(this.panel.colorScheme);
+        console.log("In display",this.panel.color.mode);
+        if(this.panel.color.mode=="opacity")
+		//console.log("Woohoo");
+		this.panel.colors=this.scale.displayOpacity(this.panel.color.cardColor);
+	else
+		this.panel.colors=this.scale.displayColor(this.panel.colorScheme);
         this.panel.rgb_values = this.panel.colors.rgb_values;
         this.panel.hex_values = this.panel.colors.hex_values;
     }
