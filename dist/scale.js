@@ -34,7 +34,7 @@ System.register(['lodash'], function (_export, _context) {
                 };
             }();
 
-            colorSchemes = [{ name: 'RdYlGn', value: 'interpolateRdYlGn', invert: 'always' }, { name: 'Blues', value: 'interpolateBlues', invert: 'dark' }, { name: 'Greens', value: 'interpolateGreens', invert: 'dark' }, { name: 'Greys', value: 'interpolateGreys', invert: 'dark' }, { name: 'Oranges', value: 'interpolateOranges', invert: 'dark' }, { name: 'Purples', value: 'interpolatePurples', invert: 'dark' }, { name: 'Reds', value: 'interpolateReds', invert: 'dark' }, { name: 'BuGn', value: 'interpolateBuGn', invert: 'dark' }, { name: 'BuPu', value: 'interpolateBuPu', invert: 'dark' }, { name: 'GnBu', value: 'interpolateGnBu', invert: 'dark' }, { name: 'OrRd', value: 'interpolateOrRd', invert: 'dark' }, { name: 'PuBuGn', value: 'interpolatePuBuGn', invert: 'dark' }, { name: 'PuBu', value: 'interpolatePuBu', invert: 'dark' }, { name: 'PuRd', value: 'interpolatePuRd', invert: 'dark' }, { name: 'RdPu', value: 'interpolateRdPu', invert: 'dark' }, { name: 'YlGnBu', value: 'interpolateYlGnBu', invert: 'dark' }, { name: 'YlGn', value: 'interpolateYlGn', invert: 'dark' }, { name: 'YlOrBr', value: 'interpolateYlOrBr', invert: 'dark' }, { name: 'YlOrRd', value: 'interpolateYlOrRd', invert: 'dark' }];
+            colorSchemes = [{ name: 'RdYlGn', value: 'interpolateRdYlGn' }, { name: 'Blues', value: 'interpolateBlues' }, { name: 'Greens', value: 'interpolateGreens' }, { name: 'Greys', value: 'interpolateGreys' }, { name: 'Oranges', value: 'interpolateOranges' }, { name: 'Purples', value: 'interpolatePurples' }, { name: 'Reds', value: 'interpolateReds' }, { name: 'BuGn', value: 'interpolateBuGn' }, { name: 'BuPu', value: 'interpolateBuPu' }, { name: 'GnBu', value: 'interpolateGnBu' }, { name: 'OrRd', value: 'interpolateOrRd' }, { name: 'PuBuGn', value: 'interpolatePuBuGn' }, { name: 'PuBu', value: 'interpolatePuBu' }, { name: 'PuRd', value: 'interpolatePuRd' }, { name: 'RdPu', value: 'interpolateRdPu' }, { name: 'YlGnBu', value: 'interpolateYlGnBu' }, { name: 'YlGn', value: 'interpolateYlGn' }, { name: 'YlOrBr', value: 'interpolateYlOrBr' }, { name: 'YlOrRd', value: 'interpolateYlOrRd' }];
 
             _export('Scale', Scale = function () {
                 function Scale($scope, colorScheme) {
@@ -43,6 +43,7 @@ System.register(['lodash'], function (_export, _context) {
                     this.colorScheme = colorScheme;
                     this.hexArray = [];
                     this.rgbArray = [];
+                    //	this.invert=invert;
                 }
 
                 _createClass(Scale, [{
@@ -75,14 +76,21 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'calculate',
-                    value: function calculate(r, g, b, x, y, z) {
+                    value: function calculate(r, g, b, x, y, z, invert) {
                         for (var i = 0; i < 50; i++) {
                             r = r + x;
                             g = g + y;
                             b = b + z;
                             var str = 'rgb(' + r + ',' + g + ',' + b + ')';
-                            this.rgbArray.push(str);
-                            this.hexArray.push("#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b));
+                            console.log("Object recv", invert);
+
+                            if (invert == true) {
+                                this.rgbArray.push(str);
+                                this.hexArray.push("#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b));
+                            } else {
+                                this.rgbArray.unshift(str);
+                                this.hexArray.unshift("#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b));
+                            }
                         }
                     }
                 }, {
@@ -97,8 +105,9 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'calculateOpacity',
-                    value: function calculateOpacity(color) {
+                    value: function calculateOpacity(color, invert) {
 
+                        console.log("invert ", this.invert);
                         var r = this.hexToRgb(color).r;
                         var g = this.hexToRgb(color).g;
                         var b = this.hexToRgb(color).b;
@@ -119,36 +128,38 @@ System.register(['lodash'], function (_export, _context) {
                             newG = newG + parseInt(y);
                             newB = newB + parseInt(z);
                             var str = 'rgb(' + newR + ',' + newG + ',' + newB + ')';
-                            this.rgbArray.push(str);
-                            this.hexArray.push("#" + this.componentToHex(newR) + this.componentToHex(newG) + this.componentToHex(newB));
+                            if (invert == true) {
+                                this.rgbArray.push(str);
+                                this.hexArray.push("#" + this.componentToHex(newR) + this.componentToHex(newG) + this.componentToHex(newB));
+                            } else {
+                                this.rgbArray.unshift(str);
+                                this.hexArray.unshift("#" + this.componentToHex(newR) + this.componentToHex(newG) + this.componentToHex(newB));
+                            }
                         }
                     }
                 }, {
                     key: 'displayOpacity',
-                    value: function displayOpacity(color) {
+                    value: function displayOpacity(color, invert) {
+                        console.log("invert scale ", invert);
                         console.log("First letter", color.charAt(0));
                         this.rgbArray = [];
                         this.hexArray = [];
-                        if (color.charAt(0) == '#') this.calculateOpacity(color);
-                        //console.log("Color to opac",color);
-                        //console.log("rgb arr",this.rgbArray);
-                        else {
-                                //var tempColor="#" + this.componentToHex(color.charAt(4)) + this.componentToHex(color.charAt(6)) + this.componentToHex(color.charAt(8));
-                                //console.log("rgb",color.charAt(4),',',color.charAt(6),',',color.charAt(8));
-                                var colorarr = color.substring(4, color.length - 1).replace(/ /g, '').split(',');
-                                console.log(colorarr[0]);
-                                var tempColor = "#" + this.componentToHex(parseInt(colorarr[0])) + this.componentToHex(parseInt(colorarr[1])) + this.componentToHex(parseInt(colorarr[2]));
-                                this.calculateOpacity(tempColor);
-                            }
-                        //this.calculateOpacity(color);
+                        if (color.charAt(0) == 'r') {
+                            var colorarr = color.substring(4, color.length - 1).replace(/ /g, '').split(',');
+                            console.log(colorarr[0]);
+                            var tempColor = "#" + this.componentToHex(parseInt(colorarr[0])) + this.componentToHex(parseInt(colorarr[1])) + this.componentToHex(parseInt(colorarr[2]));
+                            color = tempColor;
+                        }
+                        this.calculateOpacity(color, invert);
+
                         return {
                             rgb_values: this.rgbArray,
                             hex_values: this.hexArray
                         };
                     }
                 }, {
-                    key: 'displayColor',
-                    value: function displayColor(color) {
+                    key: 'displayScheme',
+                    value: function displayScheme(color, invert) {
                         this.rgbArray = [];
                         this.hexArray = [];
                         var r = 0;
@@ -157,79 +168,79 @@ System.register(['lodash'], function (_export, _context) {
 
                         switch (color) {
                             case 'interpolateRdYlGn':
-                                this.calculate(255, g, b, -3, 5, 0);
+                                this.calculate(255, g, b, -3, 5, 0, invert);
                                 break;
 
                             case 'interpolateOranges':
-                                this.calculate(255, 46, 0, 0, 3, 0);
+                                this.calculate(255, 46, 0, 0, 3, 0, invert);
                                 break;
 
                             case 'interpolateGreens':
-                                this.calculate(r, 255, b, 5, 0, 5);
+                                this.calculate(r, 255, b, 5, 0, 5, invert);
                                 break;
 
                             case 'interpolateBlues':
-                                this.calculate(r, g, 255, 4, 4, 0);
+                                this.calculate(r, g, 255, 4, 4, 0, invert);
                                 break;
 
                             case 'interpolateReds':
-                                this.calculate(250, g, b, 0, 5, 5);
+                                this.calculate(250, g, b, 0, 5, 5, invert);
                                 break;
 
                             case 'interpolateYlOrBr':
-                                this.calculate(245, 230, 10, -2, -3, 1);
+                                this.calculate(245, 230, 10, -2, -3, 1, invert);
                                 break;
 
                             case 'interpolateGreys':
-                                this.calculate(r, g, b, 5, 5, 5);
+                                this.calculate(r, g, b, 5, 5, 5, invert);
                                 break;
 
                             case 'interpolatePurples':
-                                this.calculate(100, g, 255, 3, 5, 0);
+                                this.calculate(100, g, 255, 3, 5, 0, invert);
                                 break;
 
                             case 'interpolateBuGn':
-                                this.calculate(r, g, 255, 0, 5, -5);
+                                this.calculate(r, g, 255, 0, 5, -5, invert);
                                 break;
 
                             case 'interpolateBuPu':
-                                this.calculate(r, g, 255, 2, 0, -3);
+                                this.calculate(r, g, 255, 2, 0, -3, invert);
                                 break;
 
                             case 'interpolateGnBu':
-                                this.calculate(r, 255, b, 0, -5, 5);
+                                this.calculate(r, 255, b, 0, -5, 5, invert);
                                 break;
 
                             case 'interpolateOrRd':
-                                this.calculate(205, 150, b, 1, -3, 0);
+                                this.calculate(205, 150, b, 1, -3, 0, invert);
                                 break;
 
                             case 'interpolatePuBuGn':
-                                this.calculate(200, g, 255, -4, 5, -5);
+                                this.calculate(200, g, 255, -4, 5, -5, invert);
                                 break;
 
                             case 'interpolatePuBu':
-                                this.calculate(200, g, 255, -4, 3, 0);
+                                this.calculate(200, g, 255, -4, 3, 0, invert);
                                 break;
 
                             case 'interpolatePuRd':
-                                this.calculate(90, g, 255, 3, 0, -5);
+                                this.calculate(90, g, 255, 3, 0, -5, invert);
                                 break;
 
                             case 'interpolateRdPu':
-                                this.calculate(255, g, b, -1, 0, 5);
+                                this.calculate(255, g, b, -1, 0, 5, invert);
                                 break;
 
                             case 'interpolateYlGn':
-                                this.calculate(245, 245, b, -4, 0, 0);
+                                this.calculate(245, 245, b, -4, 0, 0, invert);
                                 break;
 
                             case 'interpolateYlGnBu':
-                                this.calculate(255, 255, b, -3, -2, 2);
+                                this.calculate(255, 255, b, -3, -2, 2, invert);
                                 break;
 
                             case 'interpolateYlOrRd':
-                                this.calculate(255, 255, b, 0, -5, 0);
+                                this.calculate(255, 255, b, 0, -5, 0, invert);
                                 break;
 
                         }

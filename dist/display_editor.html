@@ -41,15 +41,10 @@
         <div class="gf-form">
             <div style="background-color:{{x}}; display:inline;width:0.34rem;height:24px;" ng-repeat="x in ctrl.panel.hex_values track by $index"></div>
         </div>
-
-        <div class="gf-form">
-            <label class="gf-form-label width-9"> Color </label>
-            <input type="text" class="gf-form-input width-8" ng-model="ctrl.panel.inputColor" ng-change="ctrl.render()">
-        </div>
     </div>
 
         
-        <gf-form-switch class="gf-form" label-class="width-8"
+        <gf-form-switch class="gf-form" label-class="width-9"
             label="Invert"
             checked="ctrl.panel.invert" on-change="ctrl.render()">
         </gf-form-switch>

@@ -122,6 +122,7 @@ System.register(['./css/atlas3_leafletmap.css!', 'lodash', 'app/plugins/sdk', '.
 																				_this.map_drawn = false;
 																				_this.custom_hover = new CustomHover(_this.panel.tooltip.content);
 																				_this.scale = new Scale(_this.colorScheme);
+																				console.log("object invert", _this.panel.invert);
 																				_this.colorSchemes = _this.scale.getColorSchemes();
 																				_this.events.on('data-received', _this.onDataReceived.bind(_this));
 																				_this.events.on('data-error', _this.onDataError.bind(_this));
@@ -304,7 +305,7 @@ System.register(['./css/atlas3_leafletmap.css!', 'lodash', 'app/plugins/sdk', '.
 																				value: function onInitEditMode() {
 																								this.addEditorTab('Options', 'public/plugins/worldview/editor.html', 2);
 																								this.addEditorTab('Display', 'public/plugins/worldview/display_editor.html', 3);
-																								tempArray = this.scale.displayColor(this.panel.colorScheme);
+																								tempArray = this.scale.displayScheme(this.panel.colorScheme, this.panel.invert);
 																				}
 																}, {
 																				key: 'onInitPanelActions',
@@ -334,9 +335,11 @@ System.register(['./css/atlas3_leafletmap.css!', 'lodash', 'app/plugins/sdk', '.
 																				key: 'display',
 																				value: function display() {
 																								console.log("In display", this.panel.color.mode);
-																								if (this.panel.color.mode == "opacity")
-																												//console.log("Woohoo");
-																												this.panel.colors = this.scale.displayOpacity(this.panel.color.cardColor);else this.panel.colors = this.scale.displayColor(this.panel.colorScheme);
+																								if (this.panel.color.mode == "opacity") {
+																												//console.log("nvert",this.panel.invert);
+																												this.panel.colors = this.scale.displayOpacity(this.panel.color.cardColor, this.panel.invert);
+																								} else this.panel.colors = this.scale.displayScheme(this.panel.colorScheme, this.panel.invert);
+
 																								this.panel.rgb_values = this.panel.colors.rgb_values;
 																								this.panel.hex_values = this.panel.colors.hex_values;
 																				}
