@@ -76,15 +76,13 @@ export class Atlas3 extends MetricsPanelCtrl {
     this.map_drawn = false;
     this.custom_hover = new CustomHover(this.panel.tooltip.content);
     this.scale = new Scale(this.colorScheme);
-    console.log("object invert",this.panel.invert);
     this.colorSchemes=this.scale.getColorSchemes();
     this.events.on('data-received', this.onDataReceived.bind(this));
     this.events.on('data-error', this.onDataError.bind(this));
     this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     this.events.on('init-panel-actions', this.onInitPanelActions.bind(this));
-    //this.events.on('panel-initialized', () => {
-   // });
+    
     }
     
     
@@ -284,21 +282,19 @@ export class Atlas3 extends MetricsPanelCtrl {
     }
  
     display() {
-        console.log("In display",this.panel.color.mode);
+            
         if(this.panel.color.mode=="opacity")
-	{
-		//console.log("nvert",this.panel.invert);
-		this.panel.colors=this.scale.displayOpacity(this.panel.color.cardColor,this.panel.invert);
-	}
+		this.panel.colors=this.scale.displayOpacity(this.panel.color.cardColor,this.panel.invert,this.panel.color.colorScale);
 	else
-	
 		this.panel.colors=this.scale.displayScheme(this.panel.colorScheme,this.panel.invert);
        
 	this.panel.rgb_values = this.panel.colors.rgb_values;
         this.panel.hex_values = this.panel.colors.hex_values;
  
    }
-   
+  
+
+    
     getHtml(htmlContent){
         return this.custom_hover.parseHtml(htmlContent);
     }

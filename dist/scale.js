@@ -43,7 +43,6 @@ System.register(['lodash'], function (_export, _context) {
                     this.colorScheme = colorScheme;
                     this.hexArray = [];
                     this.rgbArray = [];
-                    //	this.invert=invert;
                 }
 
                 _createClass(Scale, [{
@@ -60,10 +59,7 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'getColor',
                     value: function getColor(percentage) {
                         for (var i = 1; i < this.hexArray.length; i++) {
-                            if (i * (100 / this.hexArray.length) >= percentage) {
-                                //console.log("Line",this.hexArray[i-1]);
-                                return this.hexArray[i];
-                            }
+                            if (i * (100 / this.hexArray.length) >= percentage) return this.hexArray[i];
                         }
                         return this.hexArray[this.hexArray.length - 1];
                     }
@@ -82,7 +78,6 @@ System.register(['lodash'], function (_export, _context) {
                             g = g + y;
                             b = b + z;
                             var str = 'rgb(' + r + ',' + g + ',' + b + ')';
-                            console.log("Object recv", invert);
 
                             if (invert == true) {
                                 this.rgbArray.push(str);
@@ -107,14 +102,11 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'calculateOpacity',
                     value: function calculateOpacity(color, invert) {
 
-                        console.log("invert ", this.invert);
                         var r = this.hexToRgb(color).r;
                         var g = this.hexToRgb(color).g;
                         var b = this.hexToRgb(color).b;
-                        console.log("hex to rgb", r, g, b);
 
                         var rgb = r + ',' + g + ',' + b;
-                        console.log("hex to rgb", rgb);
 
                         var x = (255 - r) / 50;
                         var y = (255 - g) / 50;
@@ -124,9 +116,43 @@ System.register(['lodash'], function (_export, _context) {
                         var newG = g;
                         var newB = b;
                         for (var i = 0; i < 50; i++) {
+
                             newR = newR + parseInt(x);
                             newG = newG + parseInt(y);
                             newB = newB + parseInt(z);
+
+                            var str = 'rgb(' + newR + ',' + newG + ',' + newB + ')';
+                            if (invert == true) {
+                                this.rgbArray.push(str);
+                                this.hexArray.push("#" + this.componentToHex(newR) + this.componentToHex(newG) + this.componentToHex(newB));
+                            } else {
+                                this.rgbArray.unshift(str);
+                                this.hexArray.unshift("#" + this.componentToHex(newR) + this.componentToHex(newG) + this.componentToHex(newB));
+                            }
+                        }
+                    }
+                }, {
+                    key: 'calculateLog',
+                    value: function calculateLog(color, invert) {
+                        var r = this.hexToRgb(color).r;
+                        var g = this.hexToRgb(color).g;
+                        var b = this.hexToRgb(color).b;
+
+                        var rgb = r + ',' + g + ',' + b;
+
+                        var x = (255 - r) / 50;
+                        var y = (255 - g) / 50;
+                        var z = (255 - b) / 50;
+
+                        var newR = r;
+                        var newG = g;
+                        var newB = b;
+                        for (var i = 0.001; i < 100; i *= 10) {
+
+                            newR = newR + parseInt(x * i);
+                            newG = newG + parseInt(y * i);
+                            newB = newB + parseInt(z * i);
+
                             var str = 'rgb(' + newR + ',' + newG + ',' + newB + ')';
                             if (invert == true) {
                                 this.rgbArray.push(str);
@@ -139,18 +165,20 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'displayOpacity',
-                    value: function displayOpacity(color, invert) {
-                        console.log("invert scale ", invert);
-                        console.log("First letter", color.charAt(0));
+                    value: function displayOpacity(color, invert, scale) {
+                        console.log(" scale ", scale);
+
                         this.rgbArray = [];
                         this.hexArray = [];
                         if (color.charAt(0) == 'r') {
                             var colorarr = color.substring(4, color.length - 1).replace(/ /g, '').split(',');
-                            console.log(colorarr[0]);
                             var tempColor = "#" + this.componentToHex(parseInt(colorarr[0])) + this.componentToHex(parseInt(colorarr[1])) + this.componentToHex(parseInt(colorarr[2]));
                             color = tempColor;
                         }
-                        this.calculateOpacity(color, invert);
+
+                        if (scale == 'linear') this.calculateOpacity(color, invert);else this.calculateLog(color, invert);
+
+                        console.log(this.rgbArray);
 
                         return {
                             rgb_values: this.rgbArray,

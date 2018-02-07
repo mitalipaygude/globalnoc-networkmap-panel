@@ -122,15 +122,13 @@ System.register(['./css/atlas3_leafletmap.css!', 'lodash', 'app/plugins/sdk', '.
 																				_this.map_drawn = false;
 																				_this.custom_hover = new CustomHover(_this.panel.tooltip.content);
 																				_this.scale = new Scale(_this.colorScheme);
-																				console.log("object invert", _this.panel.invert);
 																				_this.colorSchemes = _this.scale.getColorSchemes();
 																				_this.events.on('data-received', _this.onDataReceived.bind(_this));
 																				_this.events.on('data-error', _this.onDataError.bind(_this));
 																				_this.events.on('data-snapshot-load', _this.onDataReceived.bind(_this));
 																				_this.events.on('init-edit-mode', _this.onInitEditMode.bind(_this));
 																				_this.events.on('init-panel-actions', _this.onInitPanelActions.bind(_this));
-																				//this.events.on('panel-initialized', () => {
-																				// });
+
 																				return _this;
 																}
 
@@ -334,11 +332,8 @@ System.register(['./css/atlas3_leafletmap.css!', 'lodash', 'app/plugins/sdk', '.
 																}, {
 																				key: 'display',
 																				value: function display() {
-																								console.log("In display", this.panel.color.mode);
-																								if (this.panel.color.mode == "opacity") {
-																												//console.log("nvert",this.panel.invert);
-																												this.panel.colors = this.scale.displayOpacity(this.panel.color.cardColor, this.panel.invert);
-																								} else this.panel.colors = this.scale.displayScheme(this.panel.colorScheme, this.panel.invert);
+
+																								if (this.panel.color.mode == "opacity") this.panel.colors = this.scale.displayOpacity(this.panel.color.cardColor, this.panel.invert, this.panel.color.colorScale);else this.panel.colors = this.scale.displayScheme(this.panel.colorScheme, this.panel.invert);
 
 																								this.panel.rgb_values = this.panel.colors.rgb_values;
 																								this.panel.hex_values = this.panel.colors.hex_values;

@@ -26,7 +26,8 @@
    
         <div class="gf-form" ng-if="ctrl.panel.color.colorScale === 'sqrt'">
             <label class="gf-form-label width-9">Exponent</label>
-            <input type="number" class="gf-form-input width-8" data-placement="right" ng-model="ctrl.panel.color.exponent" ng-change="ctrl.refresh()" ng-model-onblur=""  >
+            <input type="number" class="gf-form-input width-8" data-placement="right" ng-model="ctrl.panel.color.exponent" ng-change="ctrl.render()" ng-model-onblur=""  >
+
         </div>
     </div>
 
